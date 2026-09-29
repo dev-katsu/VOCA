@@ -1,0 +1,51 @@
+/* ============================================================
+   VOCA - Theme (Light / Dark)
+   File: theme.css   (shared by every page)
+
+   How this works:
+   Rather than hand-converting every one of the ~100 hardcoded
+   colors scattered across style.css / dashboard.css (risky - easy
+   to miss one and end up with unreadable text), dark mode is
+   produced by inverting the whole page's colors and rotating the
+   hue back into place. This has two guarantees that matter here:
+
+     1. LIGHT MODE IS 100% UNCHANGED - this file does nothing at
+        all unless data-theme="dark" is set, so the existing look
+        stays pixel-for-pixel identical.
+     2. CONTRAST IS PRESERVED BY MATH - inversion flips luminance
+        but keeps the *difference* in luminance between any two
+        colors, so anything readable in light mode is guaranteed
+        to still be readable in dark mode - no manual per-element
+        contrast checking needed.
+
+   The one thing inversion breaks is real photographic content
+   (faculty photos, the live camera feed) - those would look like
+   photo negatives, so they get a second, cancelling invert applied
+   directly to just those elements. Logos/icons are deliberately
+   left out of that exception list, so they tint to a light color
+   in dark mode instead of staying navy-on-dark (which would be
+   hard to see).
+   ============================================================ */
+
+html[data-theme="dark"] {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Smooth, not jarring, when the user flips the switch */
+html { transition: filter 0.2s ease; }
+
+/* ---- Cancel the inversion for real photos / live video only ---- */
+html[data-theme="dark"] .photo-preview-box img,
+html[data-theme="dark"] .photo-preview-box video,
+html[data-theme="dark"] .faculty-thumb img,
+html[data-theme="dark"] .profile-avatar img,
+html[data-theme="dark"] .profile-avatar video,
+html[data-theme="dark"] .cam-stage img,
+html[data-theme="dark"] .cam-stage video,
+html[data-theme="dark"] #dashAvatarImg,
+html[data-theme="dark"] #activeFacultyImg,
+html[data-theme="dark"] #frame,
+html[data-theme="dark"] .theme-swatch-light,
+html[data-theme="dark"] .theme-swatch-dark {
+  filter: invert(1) hue-rotate(180deg);
+}

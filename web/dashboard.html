@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>VOCA - Dashboard</title>
+<script src="js/theme.js"></script>
+<link rel="stylesheet" href="css/dashboard.css">
+<link rel="stylesheet" href="css/theme.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <img src="img/voca-wordmark.png" alt="VOCA" class="sidebar-logo">
+
+    <div class="sidebar-panel">
+      <nav class="nav-list">
+        <button class="nav-btn active" data-page="faculty">Faculty</button>
+        
+        <button class="nav-btn" data-page="session">Session Setup</button>
+        <button class="nav-btn" data-page="dashboard" style="font-size: 12px; letter-spacing: 0.5px;">Monitoring Workspace</button>
+        <button class="nav-btn" data-page="reports">Reports</button>
+        <button class="nav-btn" data-page="settings">Settings</button>
+      </nav>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-footer">
+        <div class="footer-row">
+          <img src="img/shield_pfp_icon.png" alt="" class="footer-icon">
+          <div class="footer-text">
+            <div class="footer-user" id="footerUser">User: Admin</div>
+            <div class="footer-role" id="footerRole">Authorized Personnel</div>
+          </div>
+        </div>
+        <button class="logout-btn" id="logoutBtn">Logout</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN ===================== -->
+  <main class="main">
+    <div class="topbar">
+      <span class="topbar-title" id="pageTitle">FACULTY</span>
+      <span class="topbar-clock" id="topbarClock">Week, Day | Time</span>
+    </div>
+
+    <div class="content">
+
+      <!-- ---------- DASHBOARD PAGE ---------- -->
+      <section class="page" id="page-dashboard" hidden>
+
+        <!-- Session info + profile picture -->
+        <div class="info-panel">
+          <div class="info-pills">
+            <div class="pill-row">
+              <div class="info-pill"><span class="pill-label">SUBJECT</span><span class="pill-value" id="infoSubject">--</span></div>
+              <div class="info-pill"><span class="pill-label">SECTION</span><span class="pill-value" id="infoSection">--</span></div>
+                            <div class="info-pill"><span class="pill-label">SEMESTER</span><span class="pill-value" id="infoTerm">--</span></div>
+            </div>
+            <div class="pill-row">
+              <div class="info-pill"><span class="pill-label">ROOM</span><span class="pill-value" id="infoRoom">--</span></div>
+              <div class="info-pill"><span class="pill-label">DATE</span><span class="pill-value" id="infoDate">--</span></div>
+              <div class="info-pill"><span class="pill-label">SCHOOL YEAR</span><span class="pill-value" id="infoSchoolYear">--</span></div>
+              <div class="info-pill"><span class="pill-label">DURATION LIMIT</span><span class="pill-value" id="infoLimit">--</span></div>
+            </div>
+          </div>
+
+          <div class="profile-card">
+            <div class="profile-avatar">
+              <img id="dashAvatarImg" src="img/pfp_icon.png" alt="">
+            </div>
+            <div class="profile-name-pill">
+              <span class="pill-label" style="margin-right: 8px;">FACULTY:</span>
+              <span class="pill-value" id="infoInstructor">--</span>
+            </div>
+            
+            <!-- Hidden inputs so JS doesn't break if it looks for them -->
+            <input type="file" id="dashUploadInput" accept="image/*" hidden>
+            <button id="dashTakeBtn" hidden></button>
+            <button id="dashUploadBtn" hidden></button>
+          </div>
+        </div>
+
+        <!-- Camera status -->
+        <div class="status-bar" id="cameraStatus">Camera not started - Press Start Recording Below</div>
+
+        <!-- Stat cards -->
+        <div class="stats-panel">
+          <div class="stat-card">
+            <div class="stat-title">Active Teaching</div>
+            <div class="stat-value stat-green" id="statActive">--</div>
+            <div class="stat-sub">Writing - Gesturing</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Session Duration</div>
+            <div class="stat-value stat-cyan" id="statDuration">--</div>
+            <div class="stat-sub">HH:MM:SS</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-title">Log Entries</div>
+            <div class="stat-value stat-orange" id="statLog">--</div>
+            <div class="stat-sub">Detect activities</div>
+          </div>
+        </div>
+
+        <!-- Activity distribution -->
+        <div class="dist-heading">ACTIVITY DISTRIBUTION</div>
+        <div class="dist-panel">
+          <div class="dist-row">
+            <span class="dist-label">Writing on Board</span>
+            <div class="dist-track"><div class="dist-fill" id="barWriting"></div></div>
+            <span class="dist-pct" id="pctWriting">0%</span>
+          </div>
+          <div class="dist-row">
+            <span class="dist-label">Instructional Gesturing</span>
+            <div class="dist-track"><div class="dist-fill" id="barGesturing"></div></div>
+            <span class="dist-pct" id="pctGesturing">0%</span>
+          </div>
+          
+          
+                      <div class="dist-row">
+              <span class="dist-label">Active Roving</span>
+              <div class="dist-track"><div class="dist-fill" id="barRoving"></div></div>
+              <span class="dist-pct" id="pctRoving">0%</span>
+            </div>
+            <div class="dist-row">
+              <span class="dist-label">Seated Instruction</span>
+              <div class="dist-track"><div class="dist-fill" id="barSeated"></div></div>
+              <span class="dist-pct" id="pctSeated">0%</span>
+            </div>
+<div class="dist-row">
+            <span class="dist-label">Ambient / Idle</span>
+            <div class="dist-track"><div class="dist-fill" id="barIdle"></div></div>
+            <span class="dist-pct" id="pctIdle">0%</span>
+          </div>
+
+          <div class="elapsed"><span id="elapsedText">Elapsed: --</span><span id="remainingText" class="remaining"></span></div>
+          
+
+          
+          <button class="start-btn" id="startBtn">START RECORDING (opens live feed window)</button>
+        </div>
+
+        <p class="dash-footer">&copy; 2026 VOCA System - BS Computer Science</p>
+      </section>
+
+      <!-- ---------- FACULTY PAGE ---------- -->
+      <section class="page" id="page-faculty">
+        <h2 class="page-heading">Faculty Management</h2>
+        <p class="page-desc">Register faculty members with their photo. Set one as Active before recording so the system only detects that professor.</p>
+
+        <div class="active-bar">
+          <img id="activeFacultyImg" src="img/pfp_icon_white.png" alt="" class="active-bar-icon">
+          <span><strong>ACTIVE FACULTY:</strong> <span id="activeFacultyName">(None)</span></span>
+        </div>
+
+        <h3 class="section-heading">Registered Faculty</h3>
+        <div class="reg-card">
+          <div class="reg-left">
+            <label class="field-label">Faculty Name</label>
+            <input id="facultyNameInput" type="text" class="text-input" placeholder="">
+
+            <div class="btn-row">
+              <button class="btn btn-light" id="takePhotoBtn">Take a Photo</button>
+              <button class="btn btn-light" id="uploadPhotoBtn">&#8593; Upload Photo</button>
+              <input type="file" id="uploadPhotoInput" accept="image/*" hidden>
+              <button class="btn btn-dark" id="saveFacultyBtn">Save Faculty</button>
+            </div>
+            <p class="form-msg" id="facultyFormMsg"></p>
+          </div>
+
+          <div class="reg-right">
+            <label class="field-label">Photo Preview</label>
+            <div class="photo-preview-box">
+              <video id="camVideo" autoplay playsinline hidden></video>
+              <img id="photoPreviewImg" src="img/pfp_icon.png" alt="">
+            </div>
+            <button class="btn btn-light capture-btn" id="captureBtn" hidden>Capture</button>
+          </div>
+        </div>
+
+        <h3 class="section-heading">Registered Faculty (click Set Active to use for recording)</h3>
+        <div class="faculty-list" id="facultyList">
+          <p class="empty-note" id="facultyEmptyNote">No faculty registered yet.</p>
+        </div>
+      </section>
+
+      <!-- ---------- OTHER PAGES (placeholders for now) ---------- -->
+      <section class="page" id="page-term" hidden>
+        <h2 class="page-heading">SEMESTER SETUP</h2>
+        <p class="page-desc">Set the scheduled monitoring date for each semester</p>
+
+        <div class="setup-card" style="display: flex; gap: 20px; align-items: stretch;">
+          
+          <!-- 1st Semester -->
+          <div class="term-col" id="col-sem1" style="flex: 1; border: 2px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 20px; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--btn-dark); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">1</div>
+                <span style="font-size: 16px; font-weight: 700; color: #1c2534;">1st Semester</span>
+              </div>
+              <span id="badge-sem1" style="padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; background: #9daaac; color: #1c2534; border: 1px solid rgba(0,0,0,0.1);">Not Set</span>
+            </div>
+            <div class="setup-field" style="margin-bottom: auto;">
+              <span class="field-label">Date</span>
+              <div class="ss-input-wrap" style="position: relative;">
+                <img src="img/calendar_icon.png" alt="" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; opacity: 0.5; pointer-events: none; filter: brightness(0.3);">
+                <input id="date-sem1" type="date" class="ss-input" style="padding-left: 48px; width: 100%;">
+              </div>
+            </div>
+            <button class="btn btn-light" id="btn-sem1" style="width: 100%; margin-top: 20px; padding: 12px; border-radius: 24px; font-weight: 700;">Save Date</button>
+          </div>
+
+          <!-- 2nd Semester -->
+          <div class="term-col" id="col-sem2" style="flex: 1; border: 2px solid rgba(255,255,255,0.15); border-radius: 16px; padding: 20px; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 28px; height: 28px; border-radius: 50%; background: var(--btn-dark); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700;">2</div>
+                <span style="font-size: 16px; font-weight: 700; color: #1c2534;">2nd Semester</span>
+              </div>
+              <span id="badge-sem2" style="padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 700; background: #9daaac; color: #1c2534; border: 1px solid rgba(0,0,0,0.1);">Not Set</span>
+            </div>
+            <div class="setup-field" style="margin-bottom: auto;">
+              <span class="field-label">Start Date</span>
+              <div class="ss-input-wrap" style="position: relative;">
+                <img src="img/calendar_icon.png" alt="" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; opacity: 0.5; pointer-events: none; filter: brightness(0.3);">
+                <input id="date-sem2" type="date" class="ss-input" style="padding-left: 48px; width: 100%;">
+              </div>
+            </div>
+            <button class="btn btn-light" id="btn-sem2" style="width: 100%; margin-top: 20px; padding: 12px; border-radius: 24px; font-weight: 700;">Save Date</button>
+          </div>
+
+        </div>
+      </section>
+
+      
+      <section class="page" id="page-session" hidden>
+
+        <div class="setup-card">
+          <div class="setup-grid">
+            <div class="setup-field">
+              <span class="field-label">Subject</span>
+              <div class="ss-input-wrap ss-has-chevron">
+                <select id="setSubject" class="ss-input"></select>
+                <span class="ss-chevron">&#9662;</span>
+              </div>
+            </div>
+            
+            <div class="setup-field">
+              <span class="field-label">Course</span>
+              <div class="ss-input-wrap ss-has-chevron">
+                <select id="setCourse" class="ss-input">
+                  <option value=""></option>
+                  <option>BSCS</option>
+                  <option>BSIT</option>
+                </select>
+                <span class="ss-chevron">&#9662;</span>
+              </div>
+            </div>
+            
+            <div class="setup-field">
+              <span class="field-label">Year</span>
+              <div class="ss-input-wrap ss-has-chevron">
+                <select id="setYear" class="ss-input">
+                  <option value=""></option>
+                  <option>1st Year</option>
+                  <option>2nd Year</option>
+                  <option>3rd Year</option>
+                </select>
+                <span class="ss-chevron">&#9662;</span>
+              </div>
+            </div>
+            
+            <div class="setup-field">
+                <span class="field-label">Semester</span>
+                <div class="ss-input-wrap ss-has-chevron">
+                  <select id="setSemester" class="ss-input">
+                    <option>1st Semester</option>
+                    <option>2nd Semester</option>
+                  </select>
+                  <span class="ss-chevron">&#9662;</span>
+                </div>
+              </div>
+              
+              <div class="setup-field">
+              <span class="field-label">Section</span>
+              <div class="ss-input-wrap ss-has-chevron">
+                <select id="setSection" class="ss-input"></select>
+                <span class="ss-chevron">&#9662;</span>
+              </div>
+            </div>
+
+            <div class="setup-field">
+              <span class="field-label">Instructor</span>
+              <input type="text" id="setInstructor" class="ss-input" disabled style="opacity: 0.6; cursor: not-allowed;">
+              <div class="setup-hint" style="color: #64748b; font-size: 10px;">Select from Dashboard</div>
+            </div>
+
+            <div class="setup-field">
+              <span class="field-label">Room</span>
+              <div class="ss-input-wrap ss-has-chevron">
+                <select id="setRoom" class="ss-input">
+                  <option value=""></option>
+                  <option>R-1</option>
+                  <option>R-2</option>
+                  <option>R-3</option>
+                  <option>R-4</option>
+                  <option>R-5</option>
+                  <option>R-6</option>
+                  <option>R-7</option>
+                  <option>R-8</option>
+                  <option>R-9</option>
+                  <option>R-10</option>
+                  <option>R-11</option>
+                  <option>R-12</option>
+                  <option>1JMC CL-1</option>
+                  <option>1JMC CL-2</option>
+                  <option>1JMC CL-3</option>
+                  <option>1JMC CL-4</option>
+                  <option>2JMC CL-1</option>
+                  <option>2JMC CL-2</option>
+                  <option>2JMC CL-3</option>
+                  <option>2JMC CL-4</option>
+                </select>
+                <span class="ss-chevron">&#9662;</span>
+              </div>
+            </div>
+
+            <div class="setup-field">
+              <span class="field-label">Date</span>
+              <div class="ss-input-wrap">
+                <img src="img/calendar_icon.png" alt="" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 30px; height: 30px; opacity: 0.5; pointer-events: none; filter: brightness(0.3);">
+                <input id="setDate" type="date" class="ss-input" style="padding-left: 48px; width: 100%;">
+              </div>
+            </div>
+            
+            <div class="setup-field">
+              <span class="field-label">School Year</span>
+              <input type="text" id="setSchoolYear" class="ss-input">
+            </div>
+            
+          </div>
+        </div>
+
+
+          <h3 class="section-heading">Recording Duration Limit</h3>
+        <div class="setup-card">
+          <div class="setup-grid setup-grid-limit">
+            <div class="setup-field">
+              <span class="field-label">Hours</span>
+              <div class="ss-stepper-wrap">
+                <input id="setLimitH" type="number" min="0" max="8" value="0" class="ss-input ss-number">
+                <div class="ss-stepper">
+                  <button type="button" class="ss-step-up" data-target="setLimitH" aria-label="Increase hours">&#9652;</button>
+                  <button type="button" class="ss-step-down" data-target="setLimitH" aria-label="Decrease hours">&#9662;</button>
+                </div>
+              </div>
+            </div>
+            <div class="setup-field">
+              <span class="field-label">Minutes</span>
+              <div class="ss-stepper-wrap">
+                <input id="setLimitM" type="number" min="0" max="59" value="0" class="ss-input ss-number">
+                <div class="ss-stepper">
+                  <button type="button" class="ss-step-up" data-target="setLimitM" aria-label="Increase minutes">&#9652;</button>
+                  <button type="button" class="ss-step-down" data-target="setLimitM" aria-label="Decrease minutes">&#9662;</button>
+                </div>
+              </div>
+            </div>
+            <div class="setup-field">
+              <span class="field-label">Preview</span>
+              <div class="limit-preview" id="limitPreview">Unlimited</div>
+            </div>
+          </div>
+          <p class="setup-hint">Set a maximum recording time (0=unlimited)</p>
+        </div>
+
+        <button class="save-setup-btn" id="saveSetupBtn">Save Session Setup</button>
+        <p class="form-msg setup-msg" id="setupMsg"></p>
+        <p class="dash-footer">&copy; 2026 VOCA System - BS Computer Science</p>
+      </section>
+
+      <section class="page" id="page-reports" hidden>
+        <h3 class="section-heading">Teaching Activity Reports</h3>
+
+        <div class="reports-grid">
+          <div class="report-card report-col-left">
+            <div class="report-card-title">Session Details</div>
+            <div class="detail-row"><span class="detail-label">Faculty Name:</span><span class="detail-value" id="repInstructor">--</span></div>
+            <div class="detail-row"><span class="detail-label">Semester:</span><span class="detail-value" id="repTerm">1st Semester</span></div>
+            <div class="detail-row"><span class="detail-label">Section:</span><span class="detail-value" id="repSection">--</span></div>
+            <div class="detail-row"><span class="detail-label">Subject:</span><span class="detail-value" id="repSubject">--</span></div>
+            <div class="detail-row"><span class="detail-label">Room:</span><span class="detail-value" id="repRoom">--</span></div>
+            <div class="detail-row"><span class="detail-label">Date:</span><span class="detail-value" id="repDate">--</span></div>
+                        <div class="detail-row detail-row-last"><span class="detail-label">Duration:</span><span class="detail-value" id="repDuration">--</span></div>
+          </div>
+
+            <div class="report-card report-col-right">
+              <div class="report-card-title">Activity Summary</div>
+              <div id="summaryRowsContainer"></div>
+              
+              <!-- Report Action Buttons -->
+              <div class="btn-row report-actions" style="margin-top: 20px; justify-content: center; flex-wrap: nowrap;">
+                <button class="btn btn-light report-btn" id="exportSummaryBtn" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                  <img src="img/download_icon.png" alt="" style="width: 30px; height: 30px;">
+                  Export Summary PDF
+                </button>
+                
+              </div>
+              
+            </div>
+          </div>
+
+        <p class="form-msg" id="reportsMsg"></p>
+
+        <div class="report-card recording-card">
+          <div class="recording-head">
+            <svg class="recording-icon" viewBox="0 0 34 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect x="2" y="3" width="21" height="16" rx="4" fill="#1c2534"/>
+              <polygon points="23,7 32,2 32,20 23,15" fill="#1c2534"/>
+              <polygon points="9,7 9,15 18,11" fill="#f1f4f6"/>
+            </svg>
+            <span class="report-card-title">Session Recording</span>
+          </div>
+
+          <div class="recording-body">
+            <div class="recording-video-box">
+              <span>(video recording)</span>
+            </div>
+
+            <div class="recording-info">
+              <div class="recording-field">
+                <span class="detail-label">Recorded Date:</span>
+                <span class="recording-value" id="recDate">M/D/Y</span>
+              </div>
+              <div class="recording-field">
+                <span class="detail-label">Duration:</span>
+                <span class="recording-value" id="recDuration">00:00:00</span>
+              </div>
+              <div class="recording-field">
+                <span class="detail-label">Video File:</span>
+                <span class="recording-value" id="recFile">(No recording available)</span>
+              </div>
+            </div>
+
+            <div class="recording-btns">
+              <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+                <input type="checkbox" id="setSaveVideo" style="transform: scale(1.3); cursor: pointer;" checked>
+                <label for="setSaveVideo" style="font-size: 11px; font-weight: 700; color: #1c2534; cursor: pointer;">Enable Video Recording</label>
+              </div>
+              <button class="btn btn-dark recording-btn" id="viewRecordingBtn">&#9654;&nbsp; View Recording</button>
+              <button class="btn btn-light recording-btn" id="saveRecordingBtn">&#8593;&nbsp; Save Recording</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="dash-footer">&copy; 2026 VOCA System - BS Computer Science</p>
+      </section>
+      <section class="page" id="page-settings" hidden>
+        <h2 class="page-heading">Settings</h2>
+        <div class="setup-card" style="margin-top: 10px;">
+          <h3 class="section-heading" style="margin-bottom: 16px;">USE EXTERNAL USB WEBCAM</h3>
+          <div class="toggle-wrap">
+            <label class="switch">
+              <input type="checkbox" id="camSourceInput">
+              <span class="slider round"></span>
+            </label>
+            <span class="toggle-label" id="camLabelText">Built-in Camera (Off)</span>
+          </div>
+          <div style="display: flex; gap: 10px;">
+              <button class="nav-btn" id="saveCamBtn" style="padding: 10px 24px; font-weight: 700; width: max-content;">Save Settings</button>
+              <button class="nav-btn" id="testCamBtn" style="padding: 10px 24px; font-weight: 700; width: max-content; background-color: #2f3e53;">Test Camera</button>
+            </div>
+            <div id="testCamResult" style="margin-top: 20px; display: none;">
+              <img id="testCamImg" src="" style="width: 100%; max-width: 400px; border-radius: 8px; border: 2px solid #3f4f5a;" alt="Camera Test">
+              <p id="testCamText" style="color: #2e7d32; margin-top: 8px; font-weight: bold;"></p>
+            </div>
+          </div>
+      
+          <div class="setup-card" style="margin-top: 20px;">
+            <h3 class="section-heading" style="margin-bottom: 16px;">WORKSPACE DATA</h3>
+            <p style="color: #1c2534; font-weight: 500; margin-bottom: 20px;">Clear all session setup details (Subject, Section, Room, etc.) from the Monitoring Workspace.</p>
+            <button class="nav-btn" id="clearSessionBtn" style="padding: 10px 24px; font-weight: 700; width: max-content; background-color: #e57373; color: white; border: none; cursor: pointer;">Clear Workspace Data</button>
+            <p id="clearSessionMsg" style="margin-top: 10px; font-weight: bold; color: #2e7d32;"></p>
+          </div>
+        </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- Take-a-photo camera window (Dashboard profile card) -->
+<div class="modal-backdrop" id="photoModal" hidden>
+  <div class="modal cam-modal" role="dialog" aria-modal="true" aria-labelledby="photoTitle">
+    <div class="modal-head">
+      <h2 id="photoTitle">Take a Photo</h2>
+      <p id="photoSub">Face the camera, then press Capture.</p>
+    </div>
+    <div class="cam-stage">
+      <video id="photoVideo" autoplay playsinline muted></video>
+      <img id="photoStill" alt="" hidden>
+    </div>
+    <p class="form-msg" id="photoMsg"></p>
+    <div class="modal-actions">
+      <button class="btn btn-dark" id="photoCapture">Capture</button>
+      <button class="btn btn-dark" id="photoSave" hidden>Save Photo</button>
+      <button class="btn btn-light" id="photoRetake" hidden>Retake</button>
+      <button class="btn btn-light" id="photoCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy notice (shown before every recording, as in the original app) -->
+<div class="modal-backdrop" id="privacyModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="privacyTitle">
+    <div class="modal-head">
+      <h2 id="privacyTitle">Privacy Notice</h2>
+      <p>Please read carefully before starting the recording session.</p>
+    </div>
+    <div class="modal-body" id="privacyBody">
+      <p><strong>VOCA - Vision of Classroom Activity</strong><br>City College of Calamba<br>Department of Computing and Informatics</p>
+      <h4>Data Privacy Notice</h4>
+      <p>In compliance with Republic Act No. 10173 (Data Privacy Act of 2012), this system collects the following data during a monitoring session:</p>
+      <ul>
+        <li>Live video feed from the classroom camera</li>
+        <li>Body pose keypoints of the faculty member</li>
+        <li>Teaching activity classifications and timestamps</li>
+        <li>Session details (instructor, subject, section, room)</li>
+      </ul>
+      <h4>Purpose of Collection</h4>
+      <p>Data is used solely for academic quality assurance monitoring. It is not used for disciplinary action without proper institutional review.</p>
+      <h4>Data Retention</h4>
+      <p>Session records are stored locally on this device only. No data is transmitted to external servers or third parties.</p>
+      <h4>Rights of the Data Subject</h4>
+      <p>The faculty member has the right to:</p>
+      <ul>
+        <li>Be informed of the monitoring session</li>
+        <li>Access their session records upon request</li>
+        <li>Request correction of inaccurate records</li>
+      </ul>
+      <h4>Consent</h4>
+      <p>By clicking I Agree and Start Recording, the authorized personnel confirms:</p>
+      <ol>
+        <li>The faculty member has been informed of this session.</li>
+        <li>This recording is for academic purposes only.</li>
+        <li>All data will be handled with confidentiality.</li>
+      </ol>
+    </div>
+    <label class="modal-check"><input type="checkbox" id="privacyCheck"> I have read and understood the Privacy Notice.</label>
+    <div class="modal-actions">
+      <button class="btn btn-dark" id="privacyAgree" disabled>I Agree and Start Recording</button>
+      <button class="btn btn-light" id="privacyCancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<canvas id="camCanvas" hidden></canvas>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

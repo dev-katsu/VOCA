@@ -1,0 +1,396 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #0a0b0e;
+}
+
+.page {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 60px;
+  /* Exact gradient sampled from the mockup: light gray-blue at the
+     top fading down to dark navy at the bottom. */
+  background: linear-gradient(180deg,
+      #bdc3c9 0%,
+      #abb2ba 22%,
+      #97a0aa 40%,
+      #5e6b7b 62%,
+      #4c596c 78%,
+      #39475c 100%);
+  border: 6px solid #101216;
+}
+
+/* ---------- LEFT HERO WORDMARK ---------- */
+.hero {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.hero-img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* ---------- RIGHT LOGIN CARD ---------- */
+.card {
+  width: 500px;
+  background: rgba(126, 143, 153, 0.55);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 22px;
+  padding: 22px 44px 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+
+.brand-mark-img {
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  margin-bottom: 0px;
+}
+
+.brand-title {
+  font-size: 30px;
+  font-weight: 800;
+  color: #1c1e1f;
+  letter-spacing: 1px;
+}
+
+.brand-sub {
+  font-size: 13px;
+  color: #414d5c;
+  margin-top: 1px;
+}
+
+.brand-sub2 {
+  font-size: 11px;
+  color: #4a5665;
+  margin-top: 1px;
+  margin-bottom: 14px;
+  text-align: center;
+}
+
+/* Panel, input pills, and the login button all share the same flat
+   light gray-teal surface color, matching the mockup — distinguished
+   by spacing/shadow, not by different fills. */
+.panel {
+  width: 100%;
+  background: #a3b1b3;
+  border-radius: 16px;
+  padding: 18px 27px 20px;
+}
+
+.panel-title {
+  font-size: 21px;
+  font-weight: 700;
+  color: #1c1e1f;
+  margin-bottom: 3px;
+}
+
+.panel-desc {
+  font-size: 12px;
+  color: #4b5568;
+  margin-bottom: 14px;
+}
+
+.field-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #2c3548;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.input-pill {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #a3b1b3;
+  border-radius: 24px;
+  padding: 11px 17px;
+  margin-bottom: 13px;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.08);
+}
+
+.input-icon {
+  width: 27px;
+  height: 27px;
+  min-width: 27px;
+  border-radius: 50%;
+  background: #16233a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-pill input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-family: inherit;
+  font-size: 15px;
+  color: #1b2436;
+  width: 100%;
+}
+
+.input-pill input::placeholder { color: #5b6472; }
+
+.show-pw {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #2c3548;
+  margin-bottom: 13px;
+  cursor: pointer;
+  user-select: none;
+}
+.show-pw input { cursor: pointer; }
+
+.error-msg {
+  font-size: 13px;
+  color: #b91c1c;
+  min-height: 12px;
+  margin-bottom: 4px;
+}
+
+.login-btn {
+  width: 100%;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 24px;
+  padding: 13px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #16233a;
+  background: #a3b1b3;
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.login-btn:hover  { filter: brightness(1.06); }
+.login-btn:active { transform: scale(0.98); }
+.login-btn:disabled { opacity: 0.6; cursor: default; }
+
+.footer-note {
+  margin-top: 10px;
+  font-size: 10px;
+  color: #1b2436;
+  opacity: 0.7;
+}
+
+@media (max-width: 900px) {
+  .hero { display: none; }
+  .page { justify-content: center; }
+}
+
+/* ============================================================
+   SIGN UP PAGE
+   ============================================================ */
+body.signup-body {
+  overflow-y: auto;
+}
+
+.signup-page {
+  width: 100%;
+  min-height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 40px 40px;
+  background: linear-gradient(180deg,
+      #bdc3c9 0%,
+      #abb2ba 22%,
+      #97a0aa 40%,
+      #5e6b7b 62%,
+      #4c596c 78%,
+      #39475c 100%);
+  border: 6px solid #101216;
+}
+
+.signup-topbar {
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 18px;
+}
+
+.signup-topbar img {
+  width: 240px;
+  height: auto;
+  display: block;
+}
+
+.signup-card {
+  width: 100%;
+  max-width: 640px;
+  background: rgba(126, 143, 153, 0.55);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 26px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.signup-head {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 34px;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+.signup-icon {
+  width: 52px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.signup-head h2 {
+  font-size: 19px;
+  font-weight: 800;
+  color: #1c1e1f;
+  letter-spacing: 0.5px;
+}
+
+.signup-head p {
+  font-size: 10.5px;
+  color: #414d5c;
+  margin-top: 3px;
+}
+
+.signup-body {
+  padding: 22px 34px 26px;
+}
+
+.signup-body .field-label {
+  color: #2c3548;
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 6px;
+  font-size: 10.5px;
+}
+
+.signup-body .input-pill {
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 14px;
+  margin-bottom: 13px;
+  gap: 10px;
+}
+
+.signup-body .input-icon {
+  width: 21px;
+  height: 21px;
+  min-width: 21px;
+}
+
+.signup-body .input-pill input {
+  font-size: 12px;
+}
+
+.signup-body .show-pw {
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  font-size: 10px;
+}
+
+.signup-body .error-msg,
+.signup-body .success-msg {
+  max-width: 430px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 10px;
+  min-height: 12px;
+  margin-bottom: 4px;
+}
+
+.signup-head {
+  padding: 20px 34px;
+}
+
+.signup-icon {
+  width: 48px;
+  height: 48px;
+}
+
+.signup-head h2 {
+  font-size: 19px;
+}
+
+.signup-head p {
+  font-size: 10px;
+  margin-top: 3px;
+}
+
+.create-btn {
+  display: block;
+  margin: 10px auto 0;
+  min-width: 220px;
+  border: 1px solid rgba(0,0,0,0.12);
+  border-radius: 24px;
+  padding: 12px 28px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #16233a;
+  background: #a3b1b3;
+  cursor: pointer;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+.create-btn:hover  { filter: brightness(1.06); }
+.create-btn:active { transform: scale(0.98); }
+.create-btn:disabled { opacity: 0.6; cursor: default; }
+
+.success-msg {
+  font-size: 10.5px;
+  color: #15803d;
+  min-height: 14px;
+  margin-bottom: 6px;
+  text-align: center;
+}
+
+.login-foot,
+.signup-foot {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 12px;
+  font-size: 10.5px;
+  color: #414d5c;
+}
+.login-foot a,
+.signup-foot a {
+  color: #16233a;
+  font-weight: 700;
+  text-decoration: none;
+}
+.login-foot a:hover,
+.signup-foot a:hover { text-decoration: underline; }
+
+.signup-foot {
+  margin-top: 16px;
+  color: #e4e9ee;
+}
+.signup-foot a { color: #ffffff; }

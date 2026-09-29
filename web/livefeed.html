@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Monitoring Session - VOCA</title>
+<script type="text/javascript" src="/eel.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'DM Sans', sans-serif; }
+  body, html { width: 100%; height: 100%; background: #000000; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+  
+  .container {
+    width: 100%;
+    height: 100%;
+    background: #5e6c71;
+    border: 8px solid #3a4a51;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .top-left, .top-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .btn-live {
+    background: #d3494e;
+    color: white;
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid #e74c3c;
+  }
+  
+  .btn-live .dot {
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+  }
+  
+  .title {
+    color: white;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  
+  .date-time {
+    color: #95a5a6;
+    font-size: 14px;
+    font-weight: 500;
+  }
+  
+  .btn-stop {
+    background: #d3494e;
+    color: white;
+    border: 2px solid #b33939;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+  }
+  .btn-stop:hover { background: #b33939; }
+  
+  .video-area {
+    flex: 1;
+    background: #7f8c8d;
+    border-radius: 12px;
+    border: 2px solid #5a6d79;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #frame {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: none;
+  }
+  
+  .placeholder {
+    color: white;
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 1px;
+  }
+  
+  /* Overlays */
+  .overlay-top-left {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    z-index: 10;
+  }
+  
+  .pill-active {
+    background: rgba(45, 122, 91, 0.9);
+    border-radius: 6px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #e2f2eb;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+  .pill-active .dot-green {
+    width: 6px;
+    height: 6px;
+    background: #25d366;
+    border-radius: 50%;
+  }
+  
+  .overlay-bottom-left {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 10;
+  }
+  
+  .pill-dark {
+    background: rgba(28, 37, 52, 0.9);
+    border-left: 4px solid #5a6d79;
+    border-radius: 4px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    transition: background-color 0.3s, border-left-color 0.3s;
+  }
+  
+  .pill-instructor {
+    padding: 10px 16px 10px 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .pill-instructor img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #ffffff;
+  }
+  
+  .pill-instructor .lbl {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #94a3b8;
+  }
+  .pill-instructor .val {
+    font-size: 13px;
+    font-weight: 600;
+    display: block;
+  }
+  
+  .pill-activity {
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    border-left-width: 6px; /* slightly thicker for the dynamic color */
+  }
+  
+  .overlay-bottom-right {
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    z-index: 10;
+  }
+  
+  .pill-duration {
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .dur-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
+  }
+  
+  .dur-value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 1px;
+  }
+  
+  .dur-value img {
+    width: 18px;
+    height: 18px;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <div class="top-left">
+        <div class="btn-live">
+          <div class="dot"></div>
+          LIVE
+        </div>
+        <div class="title">MONITORING SESSION</div>
+      </div>
+      <div class="top-right">
+        <div class="date-time" id="dt">Date | Time</div>
+        <button class="btn-stop" id="stopBtn">STOP & CLOSE</button>
+      </div>
+    </div>
+    
+    <div class="video-area">
+      <div class="overlay-top-left">
+        <div class="pill-active">
+          Current Active <div class="dot-green"></div>
+        </div>
+      </div>
+      
+      <div class="overlay-bottom-left">
+        <div class="pill-instructor pill-dark">
+          <img src="img/pfp_icon_white.png" alt="">
+          <div>
+            <span class="lbl">INSTRUCTOR: </span>
+            <span class="val" id="instName">(name)</span>
+          </div>
+        </div>
+        <div class="pill-activity pill-dark" id="actLabel">
+          Instructional Gesturing
+        </div>
+      </div>
+      
+      <div class="overlay-bottom-right">
+        <div class="pill-duration pill-dark">
+          <div class="dur-label">Session Duration:</div>
+          <div class="dur-value">
+            <img src="img/time_icon.png?v=2" alt="">
+            <span id="durText">00:00:00/01:00:00</span>
+          </div>
+        </div>
+      </div>
+      
+      <img id="frame" alt="">
+      <div class="placeholder" id="ph">(video)</div>
+    </div>
+  </div>
+
+<script>
+  const frameEl = document.getElementById('frame');
+  const ph = document.getElementById('ph');
+  const actLabel = document.getElementById('actLabel');
+  const instName = document.getElementById('instName');
+  const durText = document.getElementById('durText');
+  const dtText = document.getElementById('dt');
+
+  function fmtSec(sec) {
+    if(!sec || sec < 0) return '00:00:00';
+    let h = Math.floor(sec / 3600);
+    let m = Math.floor((sec % 3600) / 60);
+    let s = Math.floor(sec % 60);
+    return [h,m,s].map(v => v.toString().padStart(2, '0')).join(':');
+  }
+
+  function updateClock() {
+    const now = new Date();
+    const opts = { month: 'long', day: 'numeric', year: 'numeric' };
+    const dateStr = now.toLocaleDateString('en-US', opts);
+    let hours = now.getHours();
+    let mins = now.getMinutes().toString().padStart(2, '0');
+    let ampm = hours >= 12 ? 'PM' : 'AM';
+    hours = hours % 12;
+    hours = hours ? hours : 12;
+    dtText.textContent = dateStr + ' | ' + hours.toString().padStart(2, '0') + ':' + mins + ' ' + ampm;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  const ACT_COLORS = {
+    "Writing on Board": "#1D4ED8", // Darker blue
+    "Instructional Gesturing": "#0e7490", // Darker cyan
+    "Ambient / Idle": "#475569", // Gray
+    "Interacting with the Board": "#475569",
+    "Unrecognized Person": "#b91c1c", // Red
+    "Waiting for Faculty...": "#b45309", // Orange/Amber
+    "No Person Detected": "#3f4f5a"
+  };
+
+  eel.expose(update_feed);
+  function update_feed(uri, activity, fps) {
+    frameEl.src = uri;
+    if (frameEl.style.display !== 'block') {
+        frameEl.style.display = 'block';
+        ph.style.display = 'none';
+    }
+    actLabel.textContent = activity;
+    actLabel.style.backgroundColor = ACT_COLORS[activity] || "rgba(28, 37, 52, 0.9)";
+    actLabel.style.borderLeftColor = ACT_COLORS[activity] || "#5a6d79";
+  }
+
+  eel.expose(close_feed);
+  function close_feed() { window.close(); }
+
+  setInterval(() => { try { eel.feed_heartbeat(); } catch (e) {} }, 1000);
+  try { eel.feed_heartbeat(); } catch (e) {}
+
+  setInterval(async () => {
+    try {
+      const st = await eel.get_recording_status()();
+      if(st.running) {
+         let elapStr = fmtSec(st.elapsed);
+         let limStr = fmtSec(st.limit_sec);
+         if(st.limit_sec <= 0) limStr = '00:00:00';
+         durText.textContent = elapStr + '/' + limStr;
+         
+         if(st.session_info && st.session_info.instructor) {
+             instName.textContent = st.session_info.instructor;
+         }
+      }
+    } catch (e) {}
+  }, 500);
+
+  document.getElementById('stopBtn').addEventListener('click', async () => {
+    try { await eel.stop_recording()(); } catch (e) {}
+    window.close();
+  });
+
+  async function loadInstructorPhoto() {
+      try {
+          const faculty = await eel.get_active_faculty()();
+          if (faculty && faculty.photo) {
+              document.querySelector(".pill-instructor img").src = faculty.photo;
+          }
+      } catch (e) {
+          console.error("Could not load instructor photo", e);
+      }
+  }
+  loadInstructorPhoto();
+</script>
+</body>
+</html>
