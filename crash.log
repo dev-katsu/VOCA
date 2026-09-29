@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Users\joaqu\PycharmProjects\PythonProject\detector.py", line 872, in run
+    draw_skeleton(output, last_smoothed_lms, search.shape, ox, oy)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\joaqu\PycharmProjects\PythonProject\detector.py", line 968, in draw_skeleton
+    sx, sy, v = lm
+    ^^^^^^^^^
+ValueError: too many values to unpack (expected 3, got 4)
